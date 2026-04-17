@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
-import { Shield, Lock, ClipboardList, Activity, BarChart3, Key, ChevronRight } from 'lucide-react';
+import { Shield, Lock, ClipboardList, Activity, BarChart3, Key } from 'lucide-react';
 import { ScrollReveal } from '@/components/shared';
 
 // ─── Tooltip ────────────────────────────────────────────────────────────────
@@ -111,14 +111,14 @@ const scenarioSteps = [
   { text: 'Clean email sent · Audit hash-chained to Rekor · $0 exposure', color: '#10b981' },
 ];
 
-// Animated packet traveling along a connector line
+// Animated packet traveling along a connector line (translateX for GPU compositing)
 function FlowDot({ color, delay }: { color: string; delay: number }) {
   return (
     <motion.span
-      className="absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full"
+      className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full will-change-transform"
       style={{ backgroundColor: color }}
-      initial={{ left: '4%', opacity: 0 }}
-      animate={{ left: ['4%', '96%'], opacity: [0, 1, 1, 0] }}
+      initial={{ x: 0, opacity: 0 }}
+      animate={{ x: ['0%', '800%'], opacity: [0, 1, 1, 0] }}
       transition={{ duration: 1.8, delay, repeat: Infinity, ease: 'linear', times: [0, 0.05, 0.9, 1] }}
     />
   );
@@ -157,11 +157,13 @@ export function NodeSection() {
           </p>
         </ScrollReveal>
 
-        {/* ── Desktop 5-column diagram: left | arrow | center | arrow | right ── */}
-        <div className="hidden md:flex items-stretch gap-0">
-
+        {/* ── Desktop diagram — grid anchors all 5 columns to equal row height ── */}
+        <div
+          className="hidden md:grid items-stretch gap-0"
+          style={{ gridTemplateColumns: 'minmax(0,1fr) 72px 228px 72px minmax(0,1fr)' }}
+        >
           {/* ── Left column: inputs ──────────────────────────────────────────── */}
-          <div className="flex flex-col gap-6 w-40 flex-shrink-0">
+          <div className="flex flex-col justify-center gap-5 pr-2">
             <div>
               <p className="text-[10px] font-mono text-muted-foreground/70 uppercase tracking-widest mb-2">AI Models</p>
               <div className="flex flex-col gap-1.5">
@@ -172,11 +174,11 @@ export function NodeSection() {
                     {m.detail}</>
                   }>
                     <div
-                      className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border text-xs font-mono cursor-help transition-all duration-150 hover:scale-[1.02] will-change-transform"
+                      className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border text-xs font-mono cursor-help transition-all duration-150 hover:opacity-90"
                       style={{ borderColor: `${m.color}45`, backgroundColor: `${m.color}0b`, color: '#9ca3af' }}
                     >
                       <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: m.color }} />
-                      {m.label}
+                      <span className="truncate">{m.label}</span>
                     </div>
                   </Tooltip>
                 ))}
@@ -192,11 +194,11 @@ export function NodeSection() {
                     <br /><br />{d.detail}</>
                   }>
                     <div
-                      className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border text-xs font-mono cursor-help transition-all duration-150 hover:scale-[1.02] will-change-transform"
+                      className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border text-xs font-mono cursor-help transition-all duration-150 hover:opacity-90"
                       style={{ borderColor: `${d.color}45`, backgroundColor: `${d.color}0b`, color: '#9ca3af' }}
                     >
                       <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: d.color }} />
-                      {d.label}
+                      <span className="truncate">{d.label}</span>
                     </div>
                   </Tooltip>
                 ))}
@@ -204,33 +206,32 @@ export function NodeSection() {
             </div>
           </div>
 
-          {/* ── Connector: raw → GlobiGuard ──────────────────────────────────── */}
+          {/* ── Left connector ───────────────────────────────────────────────── */}
           <Tooltip content={
             <><span className="font-semibold text-amber-400">Raw input stream</span><br /><br />
             Prompt text, data source query results, and tool call payloads — potentially containing PII.
-            GlobiGuard intercepts <em>everything</em> in this stream before any of it reaches a model.
-            This is the "unfiltered" side of the proxy.</>
+            GlobiGuard intercepts everything in this stream before any of it reaches a model.</>
           }>
-            <div className="flex-1 min-w-[44px] flex flex-col justify-center cursor-help select-none">
-              <p className="text-[9px] font-mono text-amber-500/60 text-center mb-1">raw input</p>
-              <div className="relative h-px bg-amber-500/25 mx-2">
-                <FlowDot color="#f59e0b" delay={0} />
-                <FlowDot color="#f59e0b" delay={0.9} />
-                {/* arrowhead */}
-                <span className="absolute right-0 top-1/2 -translate-y-1/2 text-amber-500/50 text-[10px] leading-none">▶</span>
+            <div className="flex items-center h-full cursor-help px-1">
+              <div className="flex flex-col items-center gap-1.5 w-full">
+                <span className="text-[9px] font-mono text-amber-500/60 whitespace-nowrap">raw input</span>
+                <div className="relative w-full h-[2px] rounded-full bg-amber-500/20 overflow-hidden">
+                  <FlowDot color="#f59e0b" delay={0} />
+                  <FlowDot color="#f59e0b" delay={0.9} />
+                </div>
+                <span className="text-[9px] font-mono text-amber-500/50 whitespace-nowrap">unfiltered</span>
               </div>
-              <p className="text-[9px] font-mono text-amber-500/50 text-center mt-1">⚠ unfiltered</p>
             </div>
           </Tooltip>
 
           {/* ── Center: GlobiGuard node ───────────────────────────────────────── */}
-          <div className="gradient-border animate-breathe glow-emerald-strong flex-shrink-0 w-52">
-            <div className="p-4 h-full flex flex-col">
+          <div className="gradient-border animate-breathe glow-emerald-strong self-center">
+            <div className="p-4">
               <Tooltip content={
                 <><span className="font-semibold text-emerald">GlobiGuard Engine</span><br /><br />
                 The mandatory proxy. There is no bypass. Every AI request passes through this node.
-                On any internal error it fails <strong>SECURE</strong> — the request is blocked, never passed through.
-                Runs 5 protection layers in under 3ms total overhead.</>
+                On any internal error it fails <strong>SECURE</strong> — blocked, never passed through.
+                All 5 layers run in under 3ms total overhead.</>
               } wide>
                 <div className="flex items-center gap-2 mb-3 pb-3 border-b border-border/50 cursor-help">
                   <div className="w-7 h-7 rounded-lg bg-emerald/20 border border-emerald/40 flex items-center justify-center flex-shrink-0">
@@ -238,12 +239,12 @@ export function NodeSection() {
                   </div>
                   <div>
                     <p className="font-semibold text-xs text-foreground">GlobiGuard</p>
-                    <p className="text-[10px] text-muted-foreground/70">hover each layer ↓</p>
+                    <p className="text-[10px] text-muted-foreground/60">hover each layer</p>
                   </div>
                 </div>
               </Tooltip>
 
-              <div className="flex flex-col gap-0.5 flex-1">
+              <div className="flex flex-col gap-0.5">
                 {capabilities.map((cap, i) => (
                   <Tooltip key={i} content={
                     <><span className="font-semibold text-emerald">{cap.label}</span><br />
@@ -281,25 +282,26 @@ export function NodeSection() {
             </div>
           </div>
 
-          {/* ── Connector: GlobiGuard → sanitized output ─────────────────────── */}
+          {/* ── Right connector ──────────────────────────────────────────────── */}
           <Tooltip content={
             <><span className="font-semibold text-emerald">Sanitized output stream</span><br /><br />
             Tokenized prompts (PII replaced with reversible tokens), policy decisions (ALLOW / MODIFY / QUEUE / BLOCK),
-            and governed tool call results. The AI model and downstream tools only ever see tokens — never raw sensitive values.</>
+            and governed tool call results. The AI model only ever sees tokens — never raw sensitive values.</>
           }>
-            <div className="flex-1 min-w-[44px] flex flex-col justify-center cursor-help select-none">
-              <p className="text-[9px] font-mono text-emerald/60 text-center mb-1">sanitized</p>
-              <div className="relative h-px bg-emerald/35 mx-2">
-                <FlowDot color="#10b981" delay={0.45} />
-                <FlowDot color="#10b981" delay={1.35} />
-                <span className="absolute right-0 top-1/2 -translate-y-1/2 text-emerald/50 text-[10px] leading-none">▶</span>
+            <div className="flex items-center h-full cursor-help px-1">
+              <div className="flex flex-col items-center gap-1.5 w-full">
+                <span className="text-[9px] font-mono text-emerald/60 whitespace-nowrap">sanitized</span>
+                <div className="relative w-full h-[2px] rounded-full bg-emerald/30 overflow-hidden">
+                  <FlowDot color="#10b981" delay={0.45} />
+                  <FlowDot color="#10b981" delay={1.35} />
+                </div>
+                <span className="text-[9px] font-mono text-emerald/50 whitespace-nowrap">governed</span>
               </div>
-              <p className="text-[9px] font-mono text-emerald/50 text-center mt-1">✓ governed</p>
             </div>
           </Tooltip>
 
           {/* ── Right column: outputs ─────────────────────────────────────────── */}
-          <div className="flex flex-col gap-6 w-40 flex-shrink-0">
+          <div className="flex flex-col justify-center gap-5 pl-2">
             <div>
               <p className="text-[10px] font-mono text-muted-foreground/70 uppercase tracking-widest mb-2">Tools & Actions</p>
               <div className="flex flex-col gap-1.5">
@@ -307,9 +309,9 @@ export function NodeSection() {
                   <Tooltip key={i} align="end" content={
                     <><span className={`font-semibold font-mono ${t.color}`}>{t.badge}</span><br /><br />{t.detail}</>
                   }>
-                    <div className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg border text-xs font-mono cursor-help transition-all duration-150 hover:scale-[1.02] will-change-transform ${t.bg}`}>
+                    <div className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg border text-xs font-mono cursor-help transition-all duration-150 hover:opacity-90 ${t.bg}`}>
                       <span className={`font-bold text-[11px] flex-shrink-0 ${t.color}`}>{t.status}</span>
-                      <span className="text-muted-foreground">{t.label}</span>
+                      <span className="text-muted-foreground truncate">{t.label}</span>
                     </div>
                   </Tooltip>
                 ))}
@@ -321,8 +323,8 @@ export function NodeSection() {
                 {frameworks.map((f, i) => (
                   <Tooltip key={i} align="end" content={f.detail}>
                     <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-emerald/20 bg-emerald/5 text-xs font-mono text-emerald cursor-help hover:bg-emerald/10 transition-colors">
-                      <span className="text-[10px]">✓</span>
-                      {f.label}
+                      <span className="text-[10px] flex-shrink-0">✓</span>
+                      <span className="truncate">{f.label}</span>
                     </div>
                   </Tooltip>
                 ))}
@@ -333,28 +335,30 @@ export function NodeSection() {
 
         {/* ── Live scenario strip ───────────────────────────────────────────── */}
         <div className="hidden md:block mt-6 gradient-border px-4 py-3">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 min-w-0">
             <div className="flex items-center gap-1.5 flex-shrink-0">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald animate-pulse" />
               <span className="text-[10px] font-mono text-muted-foreground/70 uppercase tracking-widest">Live Example</span>
             </div>
-            <div className="flex-1 h-px bg-border/30" />
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={storyStep}
-                initial={{ opacity: 0, x: 10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }}
-                transition={{ duration: 0.25 }}
-                className="flex items-center gap-1.5"
-              >
-                <ChevronRight className="w-3 h-3 flex-shrink-0" style={{ color: scenarioSteps[storyStep].color }} />
-                <span className="text-xs font-mono" style={{ color: scenarioSteps[storyStep].color }}>
-                  {scenarioSteps[storyStep].text}
-                </span>
-              </motion.div>
-            </AnimatePresence>
-            <div className="flex gap-1 ml-2 flex-shrink-0">
+            <div className="flex-shrink-0 h-px w-6 bg-border/30" />
+            <div className="flex-1 min-w-0 overflow-hidden">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={storyStep}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex items-center gap-2"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: scenarioSteps[storyStep].color }} />
+                  <span className="text-xs font-mono truncate" style={{ color: scenarioSteps[storyStep].color }}>
+                    {scenarioSteps[storyStep].text}
+                  </span>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+            <div className="flex gap-1 flex-shrink-0">
               {scenarioSteps.map((_, i) => (
                 <span key={i} className={`w-1 h-1 rounded-full transition-colors duration-300 ${i === storyStep ? 'bg-emerald' : 'bg-border/50'}`} />
               ))}

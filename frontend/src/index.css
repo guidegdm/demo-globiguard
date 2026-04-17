@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* Base backgrounds */
+  --bg-base:    #0F1117;
+  --bg-surface: #1A1D2E;
+  --bg-card:    rgba(255,255,255,0.04);
+
+  /* Architecture planes */
+  --bg-enforcement: #0d1a0d;
+  --bg-coordination: #0d0f1a;
+  --plane-coord:   #0d0f1a;
+  --plane-enforce: #0d1a0d;
+  --boundary: #4A5568;
+
+  /* Decision state colors */
+  --allow:  #38A169;
+  --modify: #ECC94B;
+  --queue:  #ED8936;
+  --block:  #E53E3E;
+
+  /* Accent */
+  --accent:       #10b981;
+  --accent-dim:   rgba(16,185,129,0.15);
+  --accent-glow:  0 0 24px rgba(16,185,129,0.3);
+
+  /* Pipeline node colors */
+  --node-data:        #2C5282;
+  --node-connector:   #744210;
+  --node-sidecar:     #2B4C8C;
+  --node-regex:       #276749;
+  --node-presidio:    #2B4C8C;
+  --node-gliner:      #6B46C1;
+  --node-scorer:      #9B2C2C;
+  --node-gate:        #C05621;
+  --node-tokenmap:    #2C7A7B;
+  --node-llm:         #4A5568;
+  --node-audit:       #553C9A;
+  --node-queue-human: #744210;
+  --node-coord:       #2A4365;
+  --node-enforce:     #22543D;
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+
+  /* Text */
+  --text-primary:   #F7FAFC;
+  --text-secondary: #A0AEC0;
+
+  /* Token pill */
+  --token-bg:     #2D3748;
+  --token-border: #68D391;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg-base);
+  color: rgba(255,255,255,0.87);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+code, .mono {
+  font-family: var(--font-mono);
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-base); }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+
+.scroll-section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.token-pill {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(44,122,123,0.2);
+  border: 1px solid rgba(44,122,123,0.6);
+  border-radius: 4px;
+  padding: 1px 8px;
+  font-family: var(--font-mono);
+  font-size: 0.8em;
+  color: #68D391;
+}

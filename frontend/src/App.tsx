@@ -1,21 +1,23 @@
+import { HeroSection } from '@/components/sections/HeroSection';
+import { ProblemSection } from '@/components/sections/ProblemSection';
+import { NodeSection } from '@/components/sections/NodeSection';
+import { CapabilitiesSection } from '@/components/sections/CapabilitiesSection';
+import { HowItWorksSection } from '@/components/sections/HowItWorksSection';
+import { IntegrationSection } from '@/components/sections/IntegrationSection';
+import { VisionSection } from '@/components/sections/VisionSection';
 import { SectionNav } from '@/components/widgets/SectionNav';
-import { HeroScene } from '@/components/scenes/HeroScene';
-import { ProblemScene } from '@/components/scenes/ProblemScene';
-import { FlowScene } from '@/components/scenes/FlowScene';
-import { AutomationScene } from '@/components/scenes/AutomationScene';
-import { ArchScene } from '@/components/scenes/ArchScene';
-import { ComplianceScene } from '@/components/scenes/ComplianceScene';
 
 export default function App() {
   return (
-    <div className="relative">
+    <main className="noise-overlay">
       <SectionNav />
-      <HeroScene />
-      <ProblemScene />
-      <FlowScene />
-      <AutomationScene />
-      <ArchScene />
-      <ComplianceScene />
-    </div>
+      <HeroSection />
+      <ProblemSection />
+      <NodeSection />
+      <CapabilitiesSection />
+      <HowItWorksSection />
+      <IntegrationSection />
+      <VisionSection />
+    </main>
   );
 }

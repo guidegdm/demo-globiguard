@@ -1,85 +1,74 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const SECTIONS = [
-  { id: 'hero',         label: 'What is GlobiGuard?' },
-  { id: 'problem',      label: 'The Problem'          },
-  { id: 'pipeline',     label: 'How It Works'         },
-  { id: 'automation',   label: 'Automation Layer'     },
-  { id: 'architecture', label: 'Architecture'         },
-  { id: 'compliance',   label: 'Compliance'           },
+const sections = [
+  { id: 'hero', label: 'Hero' },
+  { id: 'problem', label: 'Problem' },
+  { id: 'node', label: 'The Node' },
+  { id: 'capabilities', label: 'Capabilities' },
+  { id: 'how-it-works', label: 'How It Works' },
+  { id: 'integration', label: 'Integration' },
+  { id: 'vision', label: 'Vision' },
 ];
 
 export function SectionNav() {
-  const [active, setActive] = useState('hero');
-  const [hovered, setHovered] = useState<string | null>(null);
+  const [activeSection, setActiveSection] = useState('hero');
+  const [hoveredSection, setHoveredSection] = useState<string | null>(null);
 
   useEffect(() => {
-    const observers: IntersectionObserver[] = [];
-
-    SECTIONS.forEach(({ id }) => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+            break;
+          }
+        }
+      },
+      { threshold: 0.3 }
+    );
+    sections.forEach(({ id }) => {
       const el = document.getElementById(id);
-      if (!el) return;
-      const obs = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) setActive(id);
-        },
-        { threshold: 0.4 },
-      );
-      obs.observe(el);
-      observers.push(obs);
+      if (el) observer.observe(el);
     });
-
-    return () => observers.forEach((obs) => obs.disconnect());
+    return () => observer.disconnect();
   }, []);
 
   return (
-    <nav
-      className="fixed right-6 top-1/2 z-40 flex flex-col items-center gap-3"
-      style={{ transform: 'translateY(-50%)' }}
-      aria-label="Section navigation"
-    >
-      {SECTIONS.map(({ id, label }) => {
-        const isActive = active === id;
+    <nav className="fixed right-4 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col gap-3">
+      {sections.map(({ id, label }) => {
+        const isActive = activeSection === id;
         return (
-          <div
+          <button
             key={id}
-            className="relative flex items-center"
-            onMouseEnter={() => setHovered(id)}
-            onMouseLeave={() => setHovered(null)}
+            onClick={() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })}
+            onMouseEnter={() => setHoveredSection(id)}
+            onMouseLeave={() => setHoveredSection(null)}
+            className="relative flex items-center justify-end gap-2 group"
+            aria-label={label}
           >
-            {/* Tooltip */}
             <AnimatePresence>
-              {hovered === id && (
-                <motion.div
+              {hoveredSection === id && (
+                <motion.span
                   initial={{ opacity: 0, x: 8 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 8 }}
                   transition={{ duration: 0.15 }}
-                  className="absolute right-6 whitespace-nowrap rounded px-2 py-1 text-xs font-medium"
-                  style={{
-                    background: 'rgba(15,17,23,0.95)',
-                    border: '1px solid rgba(255,255,255,0.12)',
-                    color: 'rgba(255,255,255,0.85)',
-                  }}
+                  className="text-xs font-mono text-muted-foreground bg-card/90 border border-border/50 px-2 py-1 rounded whitespace-nowrap shadow-lg"
                 >
                   {label}
-                </motion.div>
+                </motion.span>
               )}
             </AnimatePresence>
-
-            {/* Dot */}
-            <button
-              onClick={() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })}
-              aria-label={`Navigate to ${label}`}
-              className="h-2.5 w-2.5 rounded-full transition-all duration-200"
-              style={
-                isActive
-                  ? { background: '#10b981', boxShadow: '0 0 8px #10b981' }
-                  : { background: 'transparent', border: '1px solid rgba(255,255,255,0.3)' }
+            <motion.div
+              animate={isActive
+                ? { width: 10, height: 10, backgroundColor: 'oklch(0.7 0.18 165)' }
+                : { width: 8, height: 8, backgroundColor: hoveredSection === id ? 'oklch(0.7 0.18 165 / 0.4)' : 'oklch(0.25 0.01 250)' }
               }
+              transition={{ duration: 0.2 }}
+              className="rounded-full will-change-transform"
             />
-          </div>
+          </button>
         );
       })}
     </nav>

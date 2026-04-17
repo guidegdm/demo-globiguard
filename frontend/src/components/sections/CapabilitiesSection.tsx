@@ -106,7 +106,7 @@ function PolicyEvalDemo() {
 // Tab 3 — Flow Monitor Demo
 const flowSteps = [
   { label: 'Fetch customer records', status: 'approved', statusLabel: '✓ Approved', color: 'text-emerald', borderColor: 'border-emerald/30' },
-  { label: 'Analyze with GPT-4.5', status: 'approved', statusLabel: '✓ Approved', color: 'text-emerald', borderColor: 'border-emerald/30' },
+  { label: 'Analyze with GPT-5.4', status: 'approved', statusLabel: '✓ Approved', color: 'text-emerald', borderColor: 'border-emerald/30' },
   { label: 'Write to CRM (unexpected scope)', status: 'flagged', statusLabel: '⚠ Flagged', color: 'text-amber-400', borderColor: 'border-amber-400/30', note: 'Outside approved scope' },
   { label: 'Send summary email', status: 'blocked', statusLabel: '✗ Blocked', color: 'text-red-400', borderColor: 'border-red-400/30', note: 'PII in external destination' },
 ];

@@ -10,7 +10,7 @@ const ORBIT_SPEED  = 0.10;  // rad/s — comfortable pace for 8 models
 const PARTICLES_PER_MODEL = 15;
 
 const MODELS = [
-  { name: 'GPT-4.5',     provider: 'OpenAI',    color: '#10a37f', logo: 'openai',    angle: 0              },
+  { name: 'GPT-5.4',     provider: 'OpenAI',    color: '#10a37f', logo: 'openai',    angle: 0              },
   { name: 'Claude 4.7',  provider: 'Anthropic', color: '#d97757', logo: 'anthropic', angle: Math.PI * 0.25 },
   { name: 'Gemini 3.1',  provider: 'Google',    color: '#4285f4', logo: 'gemini',    angle: Math.PI * 0.5  },
   { name: 'Llama 4',     provider: 'Meta',      color: '#0866ff', logo: 'meta',      angle: Math.PI * 0.75 },

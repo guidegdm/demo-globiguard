@@ -38,7 +38,7 @@ function Tooltip({
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 const aiModels = [
-  { label: 'GPT-4.5',    color: '#10a37f', provider: 'OpenAI',     detail: 'Connected via OpenAI SDK or a one-line proxy URL swap. All tool calls, streaming chunks, and function outputs are intercepted before reaching the model.' },
+  { label: 'GPT-5.4',    color: '#10a37f', provider: 'OpenAI',     detail: 'Connected via OpenAI SDK or a one-line proxy URL swap. All tool calls, streaming chunks, and function outputs are intercepted before reaching the model.' },
   { label: 'Claude 4.7', color: '#d97757', provider: 'Anthropic',  detail: 'Anthropic SDK. All messages pass through GlobiGuard. Tool use and computer use actions are individually policy-evaluated before any execution.' },
   { label: 'Gemini 3.1', color: '#4285f4', provider: 'Google',     detail: 'Google AI SDK. GlobiGuard intercepts text, image inputs, and grounding results — all governed before reaching the model.' },
   { label: 'Llama 4',    color: '#9333ea', provider: 'Self-hosted', detail: 'Works with any self-hosted model. GlobiGuard proxies at the HTTP level — no SDK changes. Drop-in for any OpenAI-compatible endpoint.' },

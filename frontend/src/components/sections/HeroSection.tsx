@@ -1,6 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { Zap, Shield, Clock } from 'lucide-react';
 import { ScrollReveal } from '@/components/shared';
+
+const HeroScene3D = lazy(() =>
+  import('./HeroScene3D').then(m => ({ default: m.HeroScene3D }))
+);
 
 const codeLines = [
   { tokens: [{ text: "import", cls: "text-purple-400" }, { text: " { GlobiGuard } ", cls: "text-foreground" }, { text: "from", cls: "text-purple-400" }, { text: " '@globiguard/node'", cls: "text-emerald" }] },
@@ -13,13 +17,6 @@ const codeLines = [
   { tokens: [{ text: "  // Block or escalate for human review", cls: "text-muted-foreground" }] },
   { tokens: [{ text: "  console.", cls: "text-foreground" }, { text: "log", cls: "text-yellow-400" }, { text: "(result.", cls: "text-foreground" }, { text: "reason", cls: "text-emerald" }, { text: ")", cls: "text-foreground" }] },
   { tokens: [{ text: "}", cls: "text-foreground" }] },
-];
-
-const orbitModels = [
-  { label: "GPT-4o", color: "#10a37f", delay: "0s", duration: "8s" },
-  { label: "Claude 3.5", color: "#d97706", delay: "-2.5s", duration: "10s" },
-  { label: "Gemini 1.5", color: "#4285f4", delay: "-5s", duration: "12s" },
-  { label: "Llama 3", color: "#9333ea", delay: "-7.5s", duration: "9s" },
 ];
 
 export function HeroSection() {
@@ -64,57 +61,18 @@ export function HeroSection() {
           </p>
         </ScrollReveal>
 
-        {/* Orbit animation */}
-        <ScrollReveal delay={0.3} className="w-full">
-          <div className="relative mx-auto" style={{ width: 220, height: 220 }}>
-            {/* Center hex */}
-            <div
-              className="animate-breathe absolute inset-0 flex items-center justify-center"
-              style={{ zIndex: 2 }}
-            >
-              <div className="w-16 h-16 rounded-2xl bg-emerald/15 border border-emerald/40 flex items-center justify-center glow-emerald">
-                <span className="text-emerald font-bold text-lg font-mono">GG</span>
-              </div>
-            </div>
-            {/* Orbit rings */}
-            <div className="absolute inset-0 rounded-full border border-emerald/10" style={{ margin: '20px' }} />
-            <div className="absolute inset-0 rounded-full border border-emerald/5" style={{ margin: '-10px' }} />
-            {/* Orbiting labels */}
-            {orbitModels.map((m, i) => (
-              <div
-                key={i}
-                className="absolute"
-                style={{
-                  top: '50%',
-                  left: '50%',
-                  width: 0,
-                  height: 0,
-                  animation: `orbit ${m.duration} linear infinite`,
-                  animationDelay: m.delay,
-                }}
-              >
-                <div
-                  className="absolute"
-                  style={{
-                    transform: 'translateX(90px)',
-                    animation: `orbit ${m.duration} linear infinite reverse`,
-                    animationDelay: m.delay,
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  <span
-                    className="text-xs px-2 py-0.5 rounded-full font-mono border"
-                    style={{
-                      backgroundColor: `${m.color}18`,
-                      borderColor: `${m.color}50`,
-                      color: m.color,
-                    }}
-                  >
-                    {m.label}
-                  </span>
+        {/* 3D scene: GlobiGuard core + orbiting model cards + data streams */}
+        <ScrollReveal delay={0.3} className="w-full flex justify-center">
+          <div className="w-full max-w-[480px] aspect-square mx-auto relative">
+            <Suspense fallback={
+              <div className="w-full h-full flex items-center justify-center">
+                <div className="w-16 h-16 rounded-2xl bg-emerald/20 border border-emerald/40 flex items-center justify-center glow-emerald animate-breathe">
+                  <span className="text-emerald font-bold font-mono text-lg">[ ]</span>
                 </div>
               </div>
-            ))}
+            }>
+              <HeroScene3D />
+            </Suspense>
           </div>
         </ScrollReveal>
 

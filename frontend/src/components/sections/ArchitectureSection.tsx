@@ -76,7 +76,7 @@ function FlowDot({ delay = 0 }: { delay?: number }) {
 // ─── Plane Node Card ──────────────────────────────────────────────────────────
 
 type NodeCardProps = {
-  icon: React.ElementType;
+  icon: React.ComponentType<{ className?: string }>;
   title: string;
   desc: string;
   tooltip: string;
@@ -262,7 +262,7 @@ function TwoPlanesDiagram() {
 // ─── Detection Cascade ────────────────────────────────────────────────────────
 
 type CascadeStage = {
-  icon: React.ElementType;
+  icon: React.ComponentType<{ className?: string }>;
   title: string;
   latency: string;
   accent: string;
